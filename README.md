@@ -59,36 +59,6 @@ Built with **FastAPI**, **LangGraph**, and **React (Vite)**, this project demons
 
 ---
 
-## 📂 Project Structure
-
-Career-Guidance-Engine/
-├── backend/
-│ ├── app/
-│ │ ├── graph/
-│ │ │ └── workflow.py # LangGraph workflow
-│ │ ├── pdf_utils.py # Resume PDF extraction
-│ │ ├── webhook.py # Webhook logic
-│ │ ├── models.py # Pydantic models
-│ │ └── main.py # FastAPI entry point
-│ ├── requirements.txt
-│ └── .env # Environment variables (not committed)
-│
-├── frontend/
-│ ├── src/
-│ │ ├── components/
-│ │ │ ├── Chat.jsx
-│ │ │ ├── ResumeUpload.jsx
-│ │ │ └── SummaryCard.jsx
-│ │ ├── api.js
-│ │ └── App.jsx
-│ ├── package.json
-│ └── vite.config.js
-│
-├── .gitignore
-└── README.md
-
----
-
 ## 🔁 System Flow
 
 1. User provides:
