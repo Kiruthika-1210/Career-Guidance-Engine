@@ -7,6 +7,9 @@ export default function Chat() {
   const [reply, setReply] = useState("");
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [roadmap, setRoadmap] = useState(null);
+  const [score, setScore] = useState(null);
+
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -18,6 +21,9 @@ export default function Chat() {
 
       setReply(res.reply);
       setCategory(res.guidance_category || null);
+      setRoadmap(res.roadmap || null);
+      setScore(res.score ?? null);
+
     } catch (err) {
       setReply("Error connecting to server.");
       setCategory(null);
@@ -55,6 +61,8 @@ export default function Chat() {
         <SummaryCard
           summary={reply}
           category={category}
+          roadmap={roadmap}
+          score={score}
         />
       )}
     </div>

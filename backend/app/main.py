@@ -6,6 +6,7 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
+from .db.database import save_history
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -58,6 +59,14 @@ async def chat(
     result = graph.invoke(state)
 
     reply = result.get("career_summary")
+    save_history({
+    "career_goal": career_goal,
+    "experience_level": experience_level,
+    "guidance_category": result.get("guidance_category"),
+    "score": result.get("score"),
+    "gaps": result.get("gaps"),
+    "roadmap": result.get("roadmap"),
+    })
 
     if not reply:
         return {"reply": "Something went wrong. Please try again."}
@@ -65,8 +74,11 @@ async def chat(
     trigger_webhook(result)
     
     return {
-        "reply": reply,
-        "guidance_category": result.get("guidance_category")
+    "reply": result.get("final_reply"),
+    "guidance_category": result.get("guidance_category"),
+    "roadmap": result.get("roadmap"),
+    "score": result.get("score"),
     }
+
 
 
