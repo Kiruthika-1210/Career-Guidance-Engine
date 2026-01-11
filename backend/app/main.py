@@ -3,10 +3,10 @@ from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
-from backend.app.pdf_utils import extract_text_from_pdf
-from backend.app.graph.workflow import build_graph
-from backend.app.webhook import trigger_webhook
-from backend.app.db.database import save_history
+from app.pdf_utils import extract_text_from_pdf
+from app.graph.workflow import build_graph
+from app.webhook import trigger_webhook
+from app.db.database import save_history
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
