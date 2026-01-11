@@ -24,10 +24,7 @@ def root():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-    "http://localhost:5173",
-    "https://career-guidance-engine.vercel.app"  # frontend URL
-    ],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
