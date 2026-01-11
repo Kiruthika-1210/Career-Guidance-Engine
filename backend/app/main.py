@@ -11,8 +11,16 @@ from .db.database import save_history
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
 
-app = FastAPI()
+app = FastAPI(title="Career Guidance Engine API")
 graph = build_graph()
+
+@app.get("/")
+def root():
+    return {
+        "status": "ok",
+        "service": "Career Guidance Engine Backend",
+        "docs": "/docs"
+    }
 
 app.add_middleware(
     CORSMiddleware,
