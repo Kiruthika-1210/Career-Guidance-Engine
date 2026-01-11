@@ -1,12 +1,12 @@
 from fastapi import FastAPI, UploadFile, File, Form
-from .pdf_utils import extract_text_from_pdf
-from .graph.workflow import build_graph
-from .webhook import trigger_webhook
 from typing import Optional
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
-from .db.database import save_history
+from backend.app.pdf_utils import extract_text_from_pdf
+from backend.app.graph.workflow import build_graph
+from backend.app.webhook import trigger_webhook
+from backend.app.db.database import save_history
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -24,7 +24,10 @@ def root():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+    "http://localhost:5173",
+    "https://career-guidance-engine.vercel.app"  # frontend URL
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -64,9 +67,13 @@ async def chat(
         "experience_level": experience_level,
     }
 
-    result = graph.invoke(state)
+    try:
+        result = graph.invoke(state)
+    except Exception as e:
+        return {"reply": "Analysis failed. Please try again later."}
 
     reply = result.get("career_summary")
+    
     save_history({
     "career_goal": career_goal,
     "experience_level": experience_level,
