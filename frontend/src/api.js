@@ -1,5 +1,7 @@
+const API_BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 export async function sendChat(formData) {
-  const res = await fetch("http://127.0.0.1:8000/chat", {
+  const res = await fetch(`${API_BASE_URL}/chat`, {
     method: "POST",
     body: formData,
   });
