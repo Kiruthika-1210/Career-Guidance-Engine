@@ -37,11 +37,9 @@ async def chat(
     experience_level: Optional[str] = Form(None),
     resume: Optional[UploadFile] = File(None),
 ):
-    # Normalize empty strings
     career_goal = career_goal or None
     experience_level = experience_level or None
 
-    # ✅ API-LEVEL VALIDATION (THIS FIXES EVERYTHING)
     if not career_goal:
         return {"reply": "What is your target career role?"}
 
@@ -57,7 +55,6 @@ async def chat(
     if not resume_text:
         return {"reply": "Please upload your resume (PDF)."}
 
-    # ✅ NOW SAFE TO ENTER LANGGRAPH
     state = {
         "resume_text": resume_text,
         "career_goal": career_goal,
@@ -67,29 +64,37 @@ async def chat(
     try:
         result = graph.invoke(state)
     except Exception as e:
+        print("Graph failed:", e)
         return {"reply": "Analysis failed. Please try again later."}
 
-    reply = result.get("career_summary")
-    
-    save_history({
-    "career_goal": career_goal,
-    "experience_level": experience_level,
-    "guidance_category": result.get("guidance_category"),
-    "score": result.get("score"),
-    "gaps": result.get("gaps"),
-    "roadmap": result.get("roadmap"),
-    })
-
+    reply = result.get("final_reply")
     if not reply:
         return {"reply": "Something went wrong. Please try again."}
 
-    trigger_webhook(result)
-    
+    # ✅ DB save (non-blocking)
+    try:
+        save_history({
+            "career_goal": career_goal,
+            "experience_level": experience_level,
+            "guidance_category": result.get("guidance_category"),
+            "score": result.get("score"),
+            "gaps": result.get("gaps"),
+            "roadmap": result.get("roadmap"),
+        })
+    except Exception as e:
+        print("DB save failed:", e)
+
+    # ✅ Webhook (non-blocking)
+    try:
+        trigger_webhook(result)
+    except Exception as e:
+        print("Webhook failed:", e)
+
     return {
-    "reply": result.get("final_reply"),
-    "guidance_category": result.get("guidance_category"),
-    "roadmap": result.get("roadmap"),
-    "score": result.get("score"),
+        "reply": reply,
+        "guidance_category": result.get("guidance_category"),
+        "roadmap": result.get("roadmap"),
+        "score": result.get("score"),
     }
 
 
