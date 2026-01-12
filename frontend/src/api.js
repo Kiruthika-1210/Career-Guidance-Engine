@@ -1,8 +1,7 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+console.log("ENV OBJECT 👉", import.meta.env);
+console.log("API BASE 👉", import.meta.env.VITE_API_BASE_URL);
 
-if (!API_BASE_URL) {
-  console.error("❌ VITE_API_BASE_URL is undefined");
-}
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 export async function sendChat(formData) {
   const res = await fetch(`${API_BASE_URL}/chat`, {
