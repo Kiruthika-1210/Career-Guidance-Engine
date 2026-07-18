@@ -7,6 +7,7 @@ from app.pdf_utils import extract_text_from_pdf
 from app.graph.workflow import build_graph
 from app.webhook import trigger_webhook
 from app.db.database import save_history
+from app.gemini_parser import extract_signals_with_gemini
 
 env_path = Path(__file__).resolve().parent.parent / ".env"
 load_dotenv(dotenv_path=env_path)
@@ -51,14 +52,16 @@ async def chat(
     resume_text = None
     if resume and resume.filename:
         resume_text = extract_text_from_pdf(resume.file)
+        signals = extract_signals_with_gemini(resume_text)
 
     if not resume_text:
         return {"reply": "Please upload your resume (PDF)."}
 
     state = {
-        "resume_text": resume_text,
-        "career_goal": career_goal,
-        "experience_level": experience_level,
+    "resume_text": resume_text,
+    "career_goal": career_goal,
+    "experience_level": experience_level,
+    "signals": signals,
     }
 
     try:
