@@ -33,7 +33,10 @@ def start_node(state: CareerState):
 
 # ---------- ROUTER ----------
 def router_node(state: CareerState):
-    signals = extract_signals(state["resume_text"])
+    signals = state.get("signals")
+
+    if signals is None:
+        signals = extract_signals(state["resume_text"])
     gaps = identify_gaps(signals)
 
     score = 0
