@@ -39,6 +39,11 @@ Built with **FastAPI**, **LangGraph**, and **React (Vite)**, this project demons
   - Status badges
 
 ---
+## Environment section:
+
+```ini
+DATABASE_URL=postgresql://user:password@host:5432/dbname
+```
 
 ## 🏗️ Tech Stack
 
@@ -50,7 +55,10 @@ Built with **FastAPI**, **LangGraph**, and **React (Vite)**, this project demons
 - Pydantic  
 - CORS Middleware  
 - Webhook Integration  
-- dotenv  
+- dotenv
+- PostgreSQL
+- SQLAlchemy
+- psycopg2
 
 ### Frontend
 - React (Vite)  
@@ -78,6 +86,7 @@ Built with **FastAPI**, **LangGraph**, and **React (Vite)**, this project demons
    - Guidance category
 
 5. Result is:
+   - Saved to PostgreSQL (career history)
    - Displayed on the UI
    - Sent to webhook (if configured)
 
@@ -100,6 +109,27 @@ Built with **FastAPI**, **LangGraph**, and **React (Vite)**, this project demons
 - `guidance_category`
 
 This avoids uncontrolled LLM behavior and ensures predictable output.
+
+---
+
+## 🗄️ Database (PostgreSQL)
+
+Every guidance result is persisted for history and traceability.
+
+**Table: `career_history`**
+
+| Column | Description |
+|---|---|
+| career_goal | Target role entered by the user |
+| experience_level | student / fresher / early-career |
+| guidance_category | Career Readiness / Skill Gap / Resume Improvement |
+| score | Readiness score |
+| gaps | Identified skill gaps |
+| roadmap | Structured roadmap (JSON) |
+
+- Connection via SQLAlchemy engine with `pool_pre_ping` for stale-connection safety
+- Inserts use parameterized queries inside a transaction (`engine.begin()`), preventing SQL injection and guaranteeing commit or rollback
+- Configured through the `DATABASE_URL` environment variable (app fails fast if it's missing)
 
 ---
 
